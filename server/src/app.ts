@@ -38,7 +38,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next(createError(404, "Route not found !!  404"));
 });
 
-//Server error handler--> all the error handlers
+//Server error handlers--> all the error handlers
 class CustomError extends Error {
   status: number;
   constructor(message: string, status: number) {
