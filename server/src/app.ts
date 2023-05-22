@@ -3,6 +3,7 @@ import express, { Express, NextFunction, Request, Response } from "express";
 import rateLimit from "express-rate-limit";
 var morgan = require("morgan");
 import createError = require("http-errors");
+import { userRouter } from "./Routers/userRouter";
 const xssClean= require("xss-clean");
 
 const app: Express = express();
@@ -21,6 +22,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(userRouter);
 
 app.get("/products", (req: Request, res: Response) => {
   res.send("Products are available");
@@ -31,6 +33,7 @@ app.post("/test", (req: Request, res: Response) => {
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to ourdfgdgfg Server");
+  
 });
 
 //client error handler
