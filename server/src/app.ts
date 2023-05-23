@@ -3,14 +3,15 @@ import express, { Express, NextFunction, Request, Response } from "express";
 import rateLimit from "express-rate-limit";
 var morgan = require("morgan");
 import createError = require("http-errors");
-import { userRouter } from "./Routers/userRouter";
+import userRouter from './routers/userRouter';
 const xssClean= require("xss-clean");
+
 
 const app: Express = express();
 
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 15 minutes
-  max: 10,
+  max: 100,
   message: "Too many requests from this IP. Please try again later",
   standardHeaders: true,
   legacyHeaders: false,
@@ -22,7 +23,8 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(userRouter);
+//user routrer
+app.use( "/api/user",userRouter);
 
 app.get("/products", (req: Request, res: Response) => {
   res.send("Products are available");
