@@ -1,11 +1,11 @@
 import bodyParser from "body-parser";
 import express, { Express, NextFunction, Request, Response } from "express";
 import rateLimit from "express-rate-limit";
+import { seedRouter } from "./routers/seedRouter";
+import userRouter from "./routers/userRouter";
 var morgan = require("morgan");
 import createError = require("http-errors");
-import userRouter from './routers/userRouter';
-const xssClean= require("xss-clean");
-
+const xssClean = require("xss-clean");
 
 const app: Express = express();
 
@@ -23,19 +23,15 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
-//user routrer
-app.use( "/api/user",userRouter);
 
-app.get("/products", (req: Request, res: Response) => {
-  res.send("Products are available");
-});
-app.post("/test", (req: Request, res: Response) => {
-  res.send("Api test is available");
-});
+//user router
+app.use("/api/user", userRouter);
+app.use("/api/seed", seedRouter);
+
+
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to ourdfgdgfg Server");
-  
 });
 
 //client error handler
