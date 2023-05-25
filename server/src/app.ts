@@ -3,8 +3,9 @@ import express, { Express, NextFunction, Request, Response } from "express";
 import rateLimit from "express-rate-limit";
 import { seedRouter } from "./routers/seedRouter";
 import userRouter from "./routers/userRouter";
+import createHttpError from "http-errors";
 var morgan = require("morgan");
-import createError = require("http-errors");
+
 const xssClean = require("xss-clean");
 
 const app: Express = express();
@@ -36,7 +37,7 @@ app.get("/", (req: Request, res: Response) => {
 
 //client error handler
 app.use((req: Request, res: Response, next: NextFunction) => {
-  next(createError(404, "Route not found !!  404"));
+  next(createHttpError(404, "Route not found !!  404"));
 });
 
 //Server error handlers--> all the error handlers

@@ -11,7 +11,7 @@ export const getUsersData = async (
     //seach variables
     const search = req.query.search || "";
     const page = Number(req.query.page) || 1;
-    const limit = Number(req.query.limit) || 2;
+    const limit = Number(req.query.limit) || 5;
     const searchRegExp = new RegExp(".*" + search + ".*", "i");
     //filter
     const filter = {
@@ -28,10 +28,12 @@ export const getUsersData = async (
       .skip((page - 1) * limit);
 
     const count = await User.find(filter).countDocuments();
-    if (!users) throw createHttpError(404, "No User found");
 
+   
+    if (users.length === 0) {
+      throw createHttpError(404, "No users found 146");
+    }
     res.send({
-      message: "Get USer data available",
       users,
       pagination: {
         totalPages: Math.ceil(count / limit),
@@ -39,8 +41,11 @@ export const getUsersData = async (
         previousPage: page - 1 > 0 ? page - 1 : null,
         nextPage: (page + 1) << Math.ceil(count / limit) ? page + 1 : null,
       },
+
+
     });
   } catch (err) {
+    
     next(err);
   }
 };
