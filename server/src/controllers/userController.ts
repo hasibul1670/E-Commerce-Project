@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import createHttpError from "http-errors";
+import mongoose from "mongoose";
 import { User } from "../models/usermodel";
 import { successResponse } from "./responseConroller";
-
 
 export const getUsersData = async (
   req: Request,
@@ -31,28 +31,53 @@ export const getUsersData = async (
 
     const count = await User.find(filter).countDocuments();
 
-   
     if (users.length === 0) {
       throw createHttpError(404, "No users found 146");
     }
-    return successResponse(res,
-      {
-        statusCode: 200,
-        message:'User were Return Successfully',
-        payload: {
-          users,
-          pagination: {
-            totalPages: Math.ceil(count / limit),
-            currentPage: page,
-            previousPage: page - 1 > 0 ? page - 1 : null,
-            nextPage: (page + 1) << Math.ceil(count / limit) ? page + 1 : null,
-          },
-          
-        }
-      })
 
+    return successResponse(res, {
+      statusCode: 200,
+      message: "User were Return Successfully",
+      payload: {
+        users,
+        pagination: {
+          totalPages: Math.ceil(count / limit),
+          currentPage: page,
+          previousPage: page - 1 > 0 ? page - 1 : null,
+          nextPage: (page + 1) << Math.ceil(count / limit) ? page + 1 : null,
+        },
+      },
+    });
   } catch (err) {
-    
     next(err);
-  }``
+  }
+};
+
+export const getUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = req.params.id;
+    const option = { password: 0 };
+    const user = await User.findById(id, option);
+
+    if (!user) {
+      throw createHttpError(404, "User doesn't exist with this Id");
+    }
+
+    return successResponse(res, {
+      statusCode: 200,
+      message: "Individual User were Returned Successfully",
+      payload: {
+        user,
+      },
+    });
+  } catch (err) {
+    if (err instanceof mongoose.Error) {
+      next(createHttpError(400, "Invalid User ID"));
+      return;
+    }
+  }
 };
