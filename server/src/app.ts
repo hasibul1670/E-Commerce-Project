@@ -1,9 +1,10 @@
 import bodyParser from "body-parser";
 import express, { Express, NextFunction, Request, Response } from "express";
 import rateLimit from "express-rate-limit";
+import createHttpError from "http-errors";
 import { seedRouter } from "./routers/seedRouter";
 import userRouter from "./routers/userRouter";
-import createHttpError from "http-errors";
+import { errorResponse } from "./controllers/responseConroller";
 var morgan = require("morgan");
 
 const xssClean = require("xss-clean");
@@ -29,8 +30,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/user", userRouter);
 app.use("/api/seed", seedRouter);
 
-
-
 app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to ourdfgdgfg Server");
 });
@@ -50,13 +49,11 @@ class CustomError extends Error {
   }
 }
 
-app.use(
-  (err: CustomError, req: Request, res: Response, next: NextFunction): any => {
-    return res.status(err.status || 500).json({
-      status: err.status,
-      success: false,
-      message: err.message,
-    });
+app.use((err: CustomError, req: Request, res: Response, next: NextFunction): any => {
+    return errorResponse(res,{
+      statusCode: err.status,
+      message: err.message 
+    })
   }
 );
 
