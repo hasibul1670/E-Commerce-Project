@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import createHttpError from "http-errors";
-import mongoose from "mongoose";
 import { User } from "../models/usermodel";
+import { findUserById } from "../services/findUser";
 import { successResponse } from "./responseConroller";
 
 export const getUsersData = async (
@@ -60,13 +60,7 @@ export const getUser = async (
 ) => {
   try {
     const id = req.params.id;
-    const option = { password: 0 };
-    const user = await User.findById(id, option);
-
-    if (!user) {
-      throw createHttpError(404, "User doesn't exist with this Id");
-    }
-
+    const user = await findUserById(id);
     return successResponse(res, {
       statusCode: 200,
       message: "Individual User were Returned Successfully",
@@ -75,9 +69,6 @@ export const getUser = async (
       },
     });
   } catch (err) {
-    if (err instanceof mongoose.Error) {
-      next(createHttpError(400, "Invalid User ID"));
-      return;
-    }
+    next(err);
   }
 };

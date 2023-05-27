@@ -34,6 +34,13 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to ECOM 2023 Server");
 });
 
+app.get("/test", (req: Request, res: Response) => {
+  res.send("Welcome to  Test Server 2023");
+});
+
+
+
+
 //client error handler
 app.use((req: Request, res: Response, next: NextFunction) => {
   next(createHttpError(404, "Route not found !!  404"));
@@ -57,4 +64,4 @@ app.use((err: CustomError, req: Request, res: Response, next: NextFunction): any
   }
 );
 
-module.exports = app;
+export default app;
