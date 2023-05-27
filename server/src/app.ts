@@ -31,7 +31,7 @@ app.use("/api/user", userRouter);
 app.use("/api/seed", seedRouter);
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("Welcome to ourdfgdgfg Server");
+  res.send("Welcome to ECOM 2023 Server");
 });
 
 //client error handler
