@@ -1,6 +1,7 @@
+
 import bcrypt from "bcrypt";
 import { Document, Schema, model } from "mongoose";
-import { defaultImagePath } from "../secret";
+
 
 interface IUserDocument extends Document {
   name: string;
@@ -44,7 +45,7 @@ const userSchema: Schema<IUserDocument> = new Schema(
     },
     image: {
       type: String,
-      default: defaultImagePath,
+      default: '' ,
     },
     address: {
       type: String, 

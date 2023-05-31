@@ -31,7 +31,7 @@ app.use(express.urlencoded({ extended: true }));
 
 
 //user router
-app.use("/api/user", userRouter);
+app.use("/api/users", userRouter);
 app.use("/api/seed", seedRouter);
 
 app.get("/", (req: Request, res: Response) => {

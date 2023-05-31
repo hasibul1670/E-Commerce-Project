@@ -3,6 +3,7 @@ import createHttpError from "http-errors";
 import { User } from "../models/usermodel";
 import { findWithId } from "../services/findItem";
 import { successResponse } from "./responseConroller";
+import { Model } from "mongoose";
 var fs = require("file-system");
 
 export const getUsersData = async (
@@ -14,7 +15,7 @@ export const getUsersData = async (
     //seach variables
     const search = req.query.search || "";
     const page = Number(req.query.page) || 1;
-    const limit = Number(req.query.limit) || 5;
+    const limit = Number(req.query.limit) || 10;
     const searchRegExp = new RegExp(".*" + search + ".*", "i");
     //filter
     const filter = {
@@ -54,7 +55,7 @@ export const getUsersData = async (
   }
 };
 
-export const getUser = async (
+export const getUserById = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -62,7 +63,7 @@ export const getUser = async (
   try {
     const id = req.params.id;
     const options = { password: 0 };
-    const user = await findWithId(id, options);
+    const user = await findWithId(User, id, options);
     return successResponse(res, {
       statusCode: 200,
       message: "Individual User were Returned Successfully",
@@ -75,7 +76,8 @@ export const getUser = async (
   }
 };
 
-export const deleteUser = async (
+
+export const deleteUserById = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -83,7 +85,7 @@ export const deleteUser = async (
   try {
     const id = req.params.id;
     const options = { password: 0 };
-    const user = await findWithId(id, options);
+    const user = await findWithId(Model, id, options);
 
     const userImagePath = user.image;
     fs.access(userImagePath, (err: Error) => {
@@ -97,14 +99,14 @@ export const deleteUser = async (
       }
     });
 
-  await User.findByIdAndDelete({
+    await User.findByIdAndDelete({
       _id: id,
       isAdmin: false,
     });
 
     return successResponse(res, {
       statusCode: 200,
-      message: " User was Deleted Successfully 146 ",
+      message: " User was Deleted Successfully  ",
     });
   } catch (err) {
     next(err);
