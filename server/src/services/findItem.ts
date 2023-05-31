@@ -2,15 +2,15 @@ import createHttpError from "http-errors";
 import mongoose from "mongoose";
 import { User } from "../models/usermodel";
 
-export const findUserById = async (id: string) => {
+export const findWithId= async (id: string,options={}) => {
   try {
-    const option = { password: 0 };
-    const user = await User.findById(id, option);
 
-    if (!user) {
-      throw createHttpError(404, "User doesn't exist with this Id");
+    const item = await User.findById(id, options);
+
+    if (!item) {
+      throw createHttpError(404, "Item doesn't exist with this Id");
     }
-    return user;
+    return item;
   } catch (error) {
     if (error instanceof mongoose.Error) {
       throw createHttpError(400, "Invalid User ID");

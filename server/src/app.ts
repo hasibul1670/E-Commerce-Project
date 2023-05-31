@@ -1,11 +1,14 @@
-import bodyParser from "body-parser";
 import express, { Express, NextFunction, Request, Response } from "express";
 import rateLimit from "express-rate-limit";
 import createHttpError from "http-errors";
+import { errorResponse } from "./controllers/responseConroller";
 import { seedRouter } from "./routers/seedRouter";
 import userRouter from "./routers/userRouter";
-import { errorResponse } from "./controllers/responseConroller";
+import { serverPort } from "./secret";
+import { connectDB } from "./config/db";
 var morgan = require("morgan");
+
+
 
 const xssClean = require("xss-clean");
 
@@ -23,8 +26,9 @@ app.use(limiter);
 app.use(xssClean());
 app.use(morgan("dev"));
 app.use(express.json());
-app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
+
+
 
 //user router
 app.use("/api/user", userRouter);
@@ -33,12 +37,6 @@ app.use("/api/seed", seedRouter);
 app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to ECOM 2023 Server");
 });
-
-app.get("/test", (req: Request, res: Response) => {
-  res.send("Welcome to  Test Server 2023");
-});
-
-
 
 
 //client error handler
@@ -56,12 +54,14 @@ class CustomError extends Error {
   }
 }
 
-app.use((err: CustomError, req: Request, res: Response, next: NextFunction): any => {
-    return errorResponse(res,{
+app.use(
+  (err: CustomError, req: Request, res: Response, next: NextFunction): any => {
+    return errorResponse(res, {
       statusCode: err.status,
-      message: err.message 
-    })
+      message: err.message,
+    });
   }
 );
+
 
 export default app;

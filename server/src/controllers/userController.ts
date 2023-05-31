@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import createHttpError from "http-errors";
 import { User } from "../models/usermodel";
-import { findUserById } from "../services/findUser";
+import { findWithId } from "../services/findItem";
 import { successResponse } from "./responseConroller";
+var fs = require("file-system");
 
 export const getUsersData = async (
   req: Request,
@@ -60,13 +61,50 @@ export const getUser = async (
 ) => {
   try {
     const id = req.params.id;
-    const user = await findUserById(id);
+    const options = { password: 0 };
+    const user = await findWithId(id, options);
     return successResponse(res, {
       statusCode: 200,
       message: "Individual User were Returned Successfully",
       payload: {
         user,
       },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const deleteUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = req.params.id;
+    const options = { password: 0 };
+    const user = await findWithId(id, options);
+
+    const userImagePath = user.image;
+    fs.access(userImagePath, (err: Error) => {
+      if (err) {
+        console.log("User image not found");
+      } else {
+        fs.unlink(userImagePath, (err: Error) => {
+          if (err) throw err;
+          console.log("User Image is Deleted");
+        });
+      }
+    });
+
+  await User.findByIdAndDelete({
+      _id: id,
+      isAdmin: false,
+    });
+
+    return successResponse(res, {
+      statusCode: 200,
+      message: " User was Deleted Successfully 146 ",
     });
   } catch (err) {
     next(err);
