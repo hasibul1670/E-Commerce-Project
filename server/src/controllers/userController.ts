@@ -1,10 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import createHttpError from "http-errors";
+import { deleteImage } from "../helper/deleteImage";
 import { User } from "../models/usermodel";
 import { findWithId } from "../services/findItem";
 import { successResponse } from "./responseConroller";
-import { Model } from "mongoose";
-var fs = require("file-system");
 
 export const getUsersData = async (
   req: Request,
@@ -76,7 +75,6 @@ export const getUserById = async (
   }
 };
 
-
 export const deleteUserById = async (
   req: Request,
   res: Response,
@@ -84,20 +82,11 @@ export const deleteUserById = async (
 ) => {
   try {
     const id = req.params.id;
-    const options = { password: 0 };
-    const user = await findWithId(Model, id, options);
+    const options = { passwod: 0 };
+    const foundedUserById = await findWithId(User, id, options);
 
-    const userImagePath = user.image;
-    fs.access(userImagePath, (err: Error) => {
-      if (err) {
-        console.log("User image not found");
-      } else {
-        fs.unlink(userImagePath, (err: Error) => {
-          if (err) throw err;
-          console.log("User Image is Deleted");
-        });
-      }
-    });
+    const userImagePath = foundedUserById.image;
+    deleteImage(userImagePath);
 
     await User.findByIdAndDelete({
       _id: id,

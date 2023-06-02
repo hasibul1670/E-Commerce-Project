@@ -2,12 +2,9 @@ import express, { Express, NextFunction, Request, Response } from "express";
 import rateLimit from "express-rate-limit";
 import createHttpError from "http-errors";
 import { errorResponse } from "./controllers/responseConroller";
-import { seedRouter } from "./routers/seedRouter";
 import userRouter from "./routers/userRouter";
-import { serverPort } from "./secret";
-import { connectDB } from "./config/db";
+import seedRouter from "./routers/seedRouter";
 var morgan = require("morgan");
-
 
 
 const xssClean = require("xss-clean");

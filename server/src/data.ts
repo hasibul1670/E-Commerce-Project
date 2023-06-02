@@ -9,21 +9,21 @@ interface IUser {
 const data: { users: IUser[] } = {
   users: [
     {
-      name: "John Doe",
+      name: "Rahim ",
       password: "password123",
       email: "johndoe@example.com",
       phone: "1234567890",
       address: "123 Main Street",
     },
     {
-      name: "Jane Smith",
+      name: "Rifat",
       password: "password456",
       email: "janesmith@example.com",
       phone: "9876543210",
       address: "456 Elm Street",
     },
     {
-      name: "Alice Johnson",
+      name: "karim",
       password: "password789",
       email: "alicejohnson@example.com",
       phone: "5555555555",

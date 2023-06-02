@@ -1,7 +1,7 @@
 import createHttpError from "http-errors";
 import mongoose from "mongoose";
 
-export const findWithId= async (Model: mongoose.Model<any> ,id: string,options={}):Promise<any> => {
+export const findWithId= async (Model: mongoose.Model<any> ,id:string,options={}):Promise<any> => {
   try {
 
     const item = await Model.findById(id,options);
