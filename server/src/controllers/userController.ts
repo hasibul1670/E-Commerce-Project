@@ -1,11 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import createHttpError from "http-errors";
+import { JsonWebToken } from "../helper/JsonWebToken";
 import { deleteImage } from "../helper/deleteImage";
 import { User } from "../models/usermodel";
+import { jwtActivationKey } from "../secret";
 import { findWithId } from "../services/findItem";
 import { successResponse } from "./responseConroller";
 
-export const getUsersData = async (
+const getUsersData = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -54,11 +56,7 @@ export const getUsersData = async (
   }
 };
 
-export const getUserById = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getUserById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id = req.params.id;
     const options = { password: 0 };
@@ -75,7 +73,7 @@ export const getUserById = async (
   }
 };
 
-export const deleteUserById = async (
+const deleteUserById = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -100,4 +98,47 @@ export const deleteUserById = async (
   } catch (err) {
     next(err);
   }
+};
+
+const processRegister = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { name, email, password, phone, address } = req.body;
+
+    const userExists = await User.exists({ email: email });
+    if (userExists) {
+      throw createHttpError(409, "User with this Email already exists");
+    }
+    const token = JsonWebToken.createJWT(
+      { name, email, password, phone, address },
+      jwtActivationKey,
+      "10m"
+    );
+
+    const newUser = {
+      name,
+      email,
+      password,
+      phone,
+      address,
+    };
+
+    return successResponse(res, {
+      statusCode: 200,
+      message: " User was Deleted Successfully  ",
+      payload: { token },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const UserController = {
+  processRegister,
+  deleteUserById,
+  getUserById,
+  getUsersData,
 };
