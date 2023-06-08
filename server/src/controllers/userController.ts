@@ -3,7 +3,7 @@ import createHttpError from "http-errors";
 import { JsonWebToken } from "../helper/JsonWebToken";
 import { deleteImage } from "../helper/deleteImage";
 import { User } from "../models/usermodel";
-import { jwtActivationKey } from "../secret";
+import { clientURL, jwtActivationKey } from "../secret";
 import { findWithId } from "../services/findItem";
 import { successResponse } from "./responseConroller";
 
@@ -117,6 +117,18 @@ const processRegister = async (
       jwtActivationKey,
       "10m"
     );
+
+    //prepare Email
+    const emailData = {
+      email,
+      subject: "Account Activation Email",
+      html: ` 
+  <h2>Hello ${name}!</h2>
+  <p>Please Click here to <a href=${clientURL}/api/users/activate/${token} target="_blank">
+   activate your Account</a>
+   </p>
+  `,
+    };
 
     const newUser = {
       name,
