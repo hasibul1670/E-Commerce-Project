@@ -1,7 +1,5 @@
-
-import bcrypt from "bcrypt";
+var bcrypt = require('bcryptjs');
 import { Document, Schema, model } from "mongoose";
-
 
 interface IUserDocument extends Document {
   name: string;
@@ -41,7 +39,7 @@ const userSchema: Schema<IUserDocument> = new Schema(
       required: [true, "User Password is required"],
       trim: true,
       minlength: [6, "Password not allowed less than 6 characters"],
-      set: (v: string) => bcrypt.hashSync(v, bcrypt.genSaltSync(10)),
+      set: (v: string) => bcrypt .hashSync(v, bcrypt.genSaltSync(10)),
     },
     image: {
       type: String,

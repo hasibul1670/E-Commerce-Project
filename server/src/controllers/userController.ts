@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import createHttpError from "http-errors";
 import { JsonWebToken } from "../helper/JsonWebToken";
 import { deleteImage } from "../helper/deleteImage";
+import sendEmailWithNodemailer from "../helper/email";
 import { User } from "../models/usermodel";
 import { clientURL, jwtActivationKey } from "../secret";
 import { findWithId } from "../services/findItem";
@@ -117,7 +118,6 @@ const processRegister = async (
       jwtActivationKey,
       "10m"
     );
-
     //prepare Email
     const emailData = {
       email,
@@ -127,20 +127,18 @@ const processRegister = async (
   <p>Please Click here to <a href=${clientURL}/api/users/activate/${token} target="_blank">
    activate your Account</a>
    </p>
-  `,
+  `
     };
-
-    const newUser = {
-      name,
-      email,
-      password,
-      phone,
-      address,
-    };
+    try {
+      await sendEmailWithNodemailer(emailData);
+    } catch (error) {
+      next(createHttpError(500,"Failed to send verification email"));
+      return;
+    }
 
     return successResponse(res, {
       statusCode: 200,
-      message: " User was Deleted Successfully  ",
+      message: ` Please ! Check your ${email} for verification`,
       payload: { token },
     });
   } catch (err) {

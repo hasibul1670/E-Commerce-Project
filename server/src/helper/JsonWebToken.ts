@@ -3,7 +3,6 @@ import createHttpError from "http-errors";
 import jwt from "jsonwebtoken";
 
 const createJWT = (payload: Object, secretKey: any, expiresIn: any) => {
-  console.log("Hello", payload, secretKey, expiresIn);
 
   if (typeof payload !== "object" || !payload  || Object.keys(payload).length === 0)  {
     throw createHttpError("payload must be a non-empty object");

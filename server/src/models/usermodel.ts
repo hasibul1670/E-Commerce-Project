@@ -1,5 +1,5 @@
 
-import bcrypt from "bcrypt";
+var bcrypt = require('bcryptjs');
 import { Document, Schema, model } from "mongoose";
 
 

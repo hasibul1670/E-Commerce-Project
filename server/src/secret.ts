@@ -12,7 +12,7 @@ export const jwtActivationKey =
   process.env.JWT_ACTIVATION_KEY || "jdgsjdgshd65416546jhsgbds";
 
 export const smtpUserName = process.env.SMTP_USER_NAME || "";
-export const smtpPassword = process.env.SMTP_PASSWORD || "";
-export const clientURL = process.env.CLIENT_URL || "";
+export const smtpPassword = process.env.SMTP_PASSWORD|| "";
+export const clientURL = process.env.CLIENT_URL|| "";
 
 //export const defaultImagePath = process.env.Default_User_Image_Path || "../public/images/users/default.jpg";
