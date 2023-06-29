@@ -1,11 +1,11 @@
 import app from "./app";
+import config, { serverPort } from "./config";
 import { connectDB } from "./config/db";
-import { serverPort } from "./secret";
- 
 
 
-app.listen(serverPort,async() => {
+
+const port = config.port;
+app.listen(serverPort, async () => {
   console.log(`Server is running at http://localhost:${serverPort}`);
- await connectDB();
+  await connectDB();
 });
-

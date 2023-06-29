@@ -4,6 +4,7 @@ import createHttpError from "http-errors";
 import { errorResponse } from "./controllers/responseConroller";
 import userRouter from "./routers/userRouter";
 import seedRouter from "./routers/seedRouter";
+import { StatusCodes } from "http-status-codes";
 var morgan = require("morgan");
 
 
@@ -38,7 +39,7 @@ app.get("/", (req: Request, res: Response) => {
 
 //client error handler
 app.use((req: Request, res: Response, next: NextFunction) => {
-  next(createHttpError(404, "Route not found !!  404"));
+  next(createHttpError(StatusCodes.NOT_FOUND, "This Route is not found !!  404"));
 });
 
 //Server error handlers--> all the error handlers
