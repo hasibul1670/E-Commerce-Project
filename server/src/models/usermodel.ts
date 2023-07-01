@@ -1,7 +1,5 @@
-
-var bcrypt = require('bcryptjs');
+var bcrypt = require("bcryptjs");
 import { Document, Schema, model } from "mongoose";
-
 
 interface IUserDocument extends Document {
   name: string;
@@ -17,7 +15,7 @@ interface IUserDocument extends Document {
 const userSchema: Schema<IUserDocument> = new Schema(
   {
     name: {
-      type: String, 
+      type: String,
       required: [true, "Username is required"],
       trim: true,
       maxlength: [31, "User Name not allowed more than 31 characters"],
@@ -26,7 +24,7 @@ const userSchema: Schema<IUserDocument> = new Schema(
     email: {
       required: [true, "Email is required"],
       trim: true,
-      type: String, 
+      type: String,
       unique: true,
       lowercase: true,
       validate: {
@@ -37,7 +35,7 @@ const userSchema: Schema<IUserDocument> = new Schema(
       },
     },
     password: {
-      type: String, 
+      type: String,
       required: [true, "User Password is required"],
       trim: true,
       minlength: [6, "Password not allowed less than 6 characters"],
@@ -45,22 +43,23 @@ const userSchema: Schema<IUserDocument> = new Schema(
     },
     image: {
       type: String,
-      default: '' ,
+      default: "",
     },
     address: {
-      type: String, 
+      type: String,
       required: [true, "Address is required"],
+      minlength: [6, "Address must be 6 characters"],
     },
     phone: {
-      type: String, 
+      type: String,
       required: [true, "Phone Number is required"],
     },
     isAdmin: {
-      type:Boolean,
+      type: Boolean,
       default: false,
     },
     isBanned: {
-      type: Boolean, 
+      type: Boolean,
       default: false,
     },
   },
