@@ -1,18 +1,21 @@
 {
-    "compilerOptions": {
-      "outDir": "dist",
-      "sourceMap": true,
-      "target": "esnext",
-      "module": "commonjs",
-      "esModuleInterop": true,
-      "forceConsistentCasingInFileNames": true,
-      "noImplicitAny": true,
-      "strict": true,
-      "skipLibCheck": true
-    },
-    "include": [
-      "./api/*.js",
-      "src/**/*.ts",
-      "test/**/*.ts",
-    ],
-  }
+  "compilerOptions": {
+    "outDir": "dist",
+    "sourceMap": true,
+    "target": "esnext",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": true,
+    "strict": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "./api/*.js",
+    "src/**/*.ts",
+    "test/**/*.ts",
+    "src/controllers/userController.ts",
+    "src/routers/userRouter.ts",
+    "src/app.ts"
+  ]
+}

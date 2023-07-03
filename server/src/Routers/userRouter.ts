@@ -1,8 +1,10 @@
 import express from "express";
-import { UserController } from "../controllers/userController";
+
 import upload from "../middlewares/uploadFile";
 import { runValidation } from "../validators";
 import { Validation } from "../validators/auth";
+import { UserController } from "../controllers/userController";
+
 
 const userRouter = express.Router();
 

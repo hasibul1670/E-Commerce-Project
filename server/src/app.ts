@@ -1,12 +1,11 @@
 import express, { Express, NextFunction, Request, Response } from "express";
 import rateLimit from "express-rate-limit";
 import createHttpError from "http-errors";
-import { errorResponse } from "./controllers/responseConroller";
-import userRouter from "./routers/userRouter";
-import seedRouter from "./routers/seedRouter";
 import { StatusCodes } from "http-status-codes";
+import { errorResponse } from "./controllers/responseConroller";
+import seedRouter from "./routers/seedRouter";
+import userRouter from "./routers/userRouter";
 var morgan = require("morgan");
-
 
 const xssClean = require("xss-clean");
 
@@ -26,8 +25,6 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
-
 //user router
 app.use("/api/users", userRouter);
 app.use("/api/seed", seedRouter);
@@ -36,10 +33,11 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to ECOM 2023 Server");
 });
 
-
 //client error handler
 app.use((req: Request, res: Response, next: NextFunction) => {
-  next(createHttpError(StatusCodes.NOT_FOUND, "This Route is not found !!  404"));
+  next(
+    createHttpError(StatusCodes.NOT_FOUND, "This Route is not found !!  404")
+  );
 });
 
 //Server error handlers--> all the error handlers
@@ -60,6 +58,5 @@ app.use(
     });
   }
 );
-
 
 export default app;

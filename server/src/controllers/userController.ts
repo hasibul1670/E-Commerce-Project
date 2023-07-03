@@ -5,7 +5,6 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import config from "../config";
 import { JsonWebToken } from "../helper/JsonWebToken";
 import { deleteImage } from "../helper/deleteImage";
-import sendEmailWithNodemailer from "../helper/email";
 import { User } from "../models/usermodel";
 import { findWithId } from "../services/findItem";
 import { successResponse } from "./responseConroller";
@@ -112,6 +111,10 @@ const processRegister = async (
   try {
     const { name, email, password, phone, address } = req.body;
 
+ 
+    const imageBufferString = req.file?.buffer.toString("base64");
+
+
     const userExists = await User.exists({ email: email });
     if (userExists) {
       throw createError(
@@ -121,7 +124,7 @@ const processRegister = async (
     }
 
     const token = JsonWebToken.createJWT(
-      { name, email, password, phone, address },
+      { name, email, password, phone, address, image:imageBufferString },
       config.jwtActivationKey,
       "10h"
     );
@@ -137,7 +140,7 @@ const processRegister = async (
   `,
     };
     try {
-     // await sendEmailWithNodemailer(emailData);
+      // await sendEmailWithNodemailer(emailData);
     } catch (error) {
       new createError(500, "Failed to send verification email");
       return;

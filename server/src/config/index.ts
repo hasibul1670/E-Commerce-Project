@@ -12,7 +12,6 @@ export default {
   smtpPassword: process.env.SMTP_PASSWORD || "",
   uploadDir: process.env.UPLOAD_FILE || "public/images/users",
   maxFileSize: process.env.MAX_FILE_SIZE,
-  allowedFileTypes: process.env.ALLOWES_FILE_TYPES,
 
   mongoDbUrl:
     process.env.MONGODB_URL || "mongodb://localhost:27017/ecommerceDB2023",

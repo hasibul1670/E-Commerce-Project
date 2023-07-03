@@ -6,7 +6,7 @@ interface IUserDocument extends Document {
   email: string;
   password: string;
   address: string;
-  image: string;
+  image: Buffer;
   phone: string;
   isBanned: boolean;
   isAdmin: boolean;
@@ -42,8 +42,9 @@ const userSchema: Schema<IUserDocument> = new Schema(
       set: (v: string) => bcrypt.hashSync(v, bcrypt.genSaltSync(10)),
     },
     image: {
-      type: String,
-      default: "",
+      type: Buffer,
+      contentType: String,
+      required: [true,'User Image is required']
     },
     address: {
       type: String,
