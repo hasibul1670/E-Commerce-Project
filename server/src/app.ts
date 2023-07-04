@@ -1,8 +1,10 @@
+import cookieParser from "cookie-parser";
 import express, { Express, NextFunction, Request, Response } from "express";
 import rateLimit from "express-rate-limit";
 import createHttpError from "http-errors";
 import { StatusCodes } from "http-status-codes";
 import { errorResponse } from "./controllers/responseConroller";
+import authRouter from "./routers/authRouter";
 import seedRouter from "./routers/seedRouter";
 import userRouter from "./routers/userRouter";
 var morgan = require("morgan");
@@ -24,10 +26,12 @@ app.use(xssClean());
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 //user router
 app.use("/api/users", userRouter);
 app.use("/api/seed", seedRouter);
+app.use("/api/auth", authRouter);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to ECOM 2023 Server");

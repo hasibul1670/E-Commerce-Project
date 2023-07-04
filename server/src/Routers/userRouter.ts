@@ -11,6 +11,7 @@ const userRouter = express.Router();
 userRouter.get("/", UserController.getUsersData);
 userRouter.get("/:id", UserController.getUserById);
 userRouter.delete("/:id", UserController.deleteUserById);
+userRouter.patch("/:id", UserController.updateUserById);
 userRouter.post(
   "/process-register",
   upload.single("image"),
@@ -19,4 +20,7 @@ userRouter.post(
   UserController.processRegister
 );
 userRouter.post("/verify", UserController.activateUserAccount);
+
+
+
 export default userRouter;

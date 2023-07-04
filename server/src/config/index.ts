@@ -12,11 +12,12 @@ export default {
   smtpPassword: process.env.SMTP_PASSWORD || "",
   uploadDir: process.env.UPLOAD_FILE || "public/images/users",
   maxFileSize: process.env.MAX_FILE_SIZE,
-
   mongoDbUrl:
     process.env.MONGODB_URL || "mongodb://localhost:27017/ecommerceDB2023",
   jwtActivationKey:
     process.env.JWT_ACTIVATION_KEY || "jdgsjdgshd65416546jhsgbds",
+  jwtAccessKey:
+    process.env.JWT_ACCESS_KEY || "VERY_ACCESS_KEY",
 };
 
 export const serverPort: number = parseInt(

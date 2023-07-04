@@ -5,6 +5,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import config from "../config";
 import { JsonWebToken } from "../helper/JsonWebToken";
 import { deleteImage } from "../helper/deleteImage";
+import sendEmailWithNodemailer from "../helper/email";
 import { User } from "../models/usermodel";
 import { findWithId } from "../services/findItem";
 import { successResponse } from "./responseConroller";
@@ -102,6 +103,36 @@ const deleteUserById = async (
     next(err);
   }
 };
+const updateUserById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = req.params.id;
+    const payload = req.body;
+    console.log('Hello',payload);
+    const isExist = await User.findById(id);
+
+    if (!isExist) {
+      throw new createError(StatusCodes.NOT_FOUND, "User not found 146!");
+    }
+
+    const result = await User.findByIdAndUpdate(id , payload, {
+      new: true,
+    });
+
+    return successResponse(res, {
+      statusCode: 200,
+      message: " User Updated Successfully  ",
+      payload: {
+        result,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 
 const processRegister = async (
   req: Request,
@@ -111,9 +142,16 @@ const processRegister = async (
   try {
     const { name, email, password, phone, address } = req.body;
 
- 
-    const imageBufferString = req.file?.buffer.toString("base64");
+    const image = req.file;
 
+    if (!image) {
+      throw createError(400, "Image File Is Required");
+    }
+    if (image.size > 1024 * 1024 * 2) {
+      throw createError(400, "File Size exceeds 2MB");
+    }
+
+    const imageBufferString = req.file?.buffer.toString("base64");
 
     const userExists = await User.exists({ email: email });
     if (userExists) {
@@ -124,7 +162,7 @@ const processRegister = async (
     }
 
     const token = JsonWebToken.createJWT(
-      { name, email, password, phone, address, image:imageBufferString },
+      { name, email, password, phone, address, image: imageBufferString },
       config.jwtActivationKey,
       "10h"
     );
@@ -140,7 +178,7 @@ const processRegister = async (
   `,
     };
     try {
-      // await sendEmailWithNodemailer(emailData);
+      await sendEmailWithNodemailer(emailData);
     } catch (error) {
       new createError(500, "Failed to send verification email");
       return;
@@ -207,4 +245,5 @@ export const UserController = {
   deleteUserById,
   getUserById,
   getUsersData,
+  updateUserById,
 };
