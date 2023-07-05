@@ -49,6 +49,25 @@ const handleLogin = async (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 };
+const handleLogout = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    res.clearCookie("accessToken");
+
+    return successResponse(res, {
+      statusCode: 200,
+      message: `User Log out in Successfully!!`,
+      payload: {},
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const authController = {
   handleLogin,
+  handleLogout,
 };
