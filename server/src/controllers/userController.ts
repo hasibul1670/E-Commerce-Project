@@ -62,6 +62,7 @@ const getUsersData = async (
 
 const getUserById = async (req: Request, res: Response, next: NextFunction) => {
   try {
+   // console.log('Hello',req.body.userId);
     const id = req.params.id;
     const options = { password: 0 };
     const user = await findWithId(User, id, options);
@@ -210,7 +211,7 @@ const activateUserAccount = async (
       if (!decoded) {
         throw createError(StatusCodes.UNAUTHORIZED, "User not able to Verify");
       }
-      console.log("Hello", decoded);
+    
 
       const userExist = await User.findOne({ email: decoded?.email });
       try {

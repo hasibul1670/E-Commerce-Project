@@ -1,5 +1,7 @@
 import cookieParser from "cookie-parser";
-import express, { Express, NextFunction, Request, Response } from "express";
+
+import cors from "cors";
+import express, { Application, NextFunction, Request, Response } from "express";
 import rateLimit from "express-rate-limit";
 import createHttpError from "http-errors";
 import { StatusCodes } from "http-status-codes";
@@ -11,7 +13,7 @@ var morgan = require("morgan");
 
 const xssClean = require("xss-clean");
 
-const app: Express = express();
+const app: Application = express();
 
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 15 minutes
@@ -21,6 +23,7 @@ const limiter = rateLimit({
   legacyHeaders: false,
 });
 
+app.use(cors());
 app.use(limiter);
 app.use(xssClean());
 app.use(morgan("dev"));

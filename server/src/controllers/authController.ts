@@ -12,7 +12,7 @@ const handleLogin = async (req: Request, res: Response, next: NextFunction) => {
     const { email, password } = req.body;
     //isExist
     const user = await User.findOne({ email: email });
-    console.log("Hello", user);
+
     if (!user) {
       throw createHttpError(404, "User not found");
     }
@@ -30,7 +30,7 @@ const handleLogin = async (req: Request, res: Response, next: NextFunction) => {
 
     //generate token
     const accessToken = JsonWebToken.createJWT(
-      { email },
+      { _id: user._id },
       config.jwtAccessKey,
       "10h"
     );
