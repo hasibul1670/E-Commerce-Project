@@ -36,7 +36,22 @@ const validateUserRegistration = [
     .isString()
     .withMessage("Phone is required"),
 ];
+const validateUserLogin = [
+  body("email")
+    .trim()
+    .notEmpty()
+    .withMessage("Email is required")
+    .isEmail()
+    .withMessage("Invalid email address"),
+  body("password")
+    .trim()
+    .notEmpty()
+    .withMessage("Password is required")
+    .isLength({ min: 6 })
+    .withMessage("Password Should Be At Least 6 Characters"),
+];
 
 export const Validation = {
   validateUserRegistration,
+  validateUserLogin,
 };

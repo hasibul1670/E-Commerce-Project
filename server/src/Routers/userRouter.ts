@@ -2,14 +2,15 @@ import express from "express";
 
 import { UserController } from "../controllers/userController";
 
-import { isLoggedIn, isLoggedOut } from "../middlewares/auth";
+import { isAdmin, isLoggedIn, isLoggedOut } from "../middlewares/auth";
 import upload from "../middlewares/uploadFile";
 import { runValidation } from "../validators";
 import { Validation } from "../validators/auth";
 
 const userRouter = express.Router();
 
-userRouter.get("/", isLoggedIn, UserController.getUsersData);
+userRouter.get("/", isLoggedIn, isAdmin, UserController.getUsersData);
+
 userRouter.get("/:id", isLoggedIn, UserController.getUserById);
 userRouter.delete("/:id", isLoggedIn, UserController.deleteUserById);
 userRouter.patch("/:id", isLoggedIn, UserController.updateUserById);
@@ -22,5 +23,6 @@ userRouter.post(
   UserController.processRegister
 );
 userRouter.post("/verify", isLoggedOut, UserController.activateUserAccount);
+userRouter.patch("/ban-user/:id", isLoggedIn,isAdmin, UserController.banUserById);
 
 export default userRouter;

@@ -62,7 +62,6 @@ const getUsersData = async (
 
 const getUserById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-   // console.log('Hello',req.body.userId);
     const id = req.params.id;
     const options = { password: 0 };
     const user = await findWithId(User, id, options);
@@ -112,14 +111,14 @@ const updateUserById = async (
   try {
     const id = req.params.id;
     const payload = req.body;
-    console.log('Hello',payload);
+    console.log("Hello", payload);
     const isExist = await User.findById(id);
 
     if (!isExist) {
       throw new createError(StatusCodes.NOT_FOUND, "User not found 146!");
     }
 
-    const result = await User.findByIdAndUpdate(id , payload, {
+    const result = await User.findByIdAndUpdate(id, payload, {
       new: true,
     });
 
@@ -211,7 +210,6 @@ const activateUserAccount = async (
       if (!decoded) {
         throw createError(StatusCodes.UNAUTHORIZED, "User not able to Verify");
       }
-    
 
       const userExist = await User.findOne({ email: decoded?.email });
       try {
@@ -240,6 +238,35 @@ const activateUserAccount = async (
   }
 };
 
+const banUserById = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const id = req.params.id;
+    //  const payload = req.body;
+
+    const isExist = await User.findById(id);
+
+    if (!isExist) {
+      throw new createError(StatusCodes.NOT_FOUND, "User not found !");
+    }
+
+    const payload = { isBanned: true };
+
+    const result = await User.findByIdAndUpdate(id, payload, {
+      new: true,
+    });
+
+    return successResponse(res, {
+      statusCode: 200,
+      message: " User is Banned Successfully  ",
+      payload: {
+        result,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const UserController = {
   processRegister,
   activateUserAccount,
@@ -247,4 +274,5 @@ export const UserController = {
   getUserById,
   getUsersData,
   updateUserById,
+  banUserById,
 };

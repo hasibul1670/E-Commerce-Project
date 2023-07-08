@@ -23,19 +23,19 @@ const handleLogin = async (req: Request, res: Response, next: NextFunction) => {
       throw createHttpError(401, "Password  is not match");
     }
 
-    //isBanned??
     if (user.isBanned) {
       throw createHttpError(403, "User is banned !! Please Contact to Admin");
     }
 
-    //generate token
+    const { name, isAdmin, isBanned, phone } = user;
+
     const accessToken = JsonWebToken.createJWT(
-      { _id: user._id },
+      { name, isAdmin, isBanned, phone },
       config.jwtAccessKey,
       "10h"
     );
     res.cookie("accessToken", accessToken, {
-      maxAge: 15 * 60 * 1000,
+      maxAge: 45 * 60 * 1000,
       httpOnly: true,
       secure: true,
     });
@@ -43,7 +43,7 @@ const handleLogin = async (req: Request, res: Response, next: NextFunction) => {
     return successResponse(res, {
       statusCode: 200,
       message: `User Logged in Successfully!!`,
-      payload: { user },
+      payload: accessToken,
     });
   } catch (error) {
     next(error);

@@ -19,8 +19,7 @@ export const isLoggedIn = async (
     if (!decoded) {
       throw createHttpError(401, "Access token Invalid");
     }
-
-    req.body.userId = decoded._id;
+    req.body.user = decoded;
 
     next();
   } catch (error) {
@@ -40,6 +39,21 @@ export const isLoggedOut = async (
       throw createHttpError(400, "User is Already logged In");
     }
 
+    next();
+  } catch (error) {
+    return next(error);
+  }
+};
+export const isAdmin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const IsAdmin = req.body.user.isAdmin;
+    if (!IsAdmin) {
+      throw createHttpError(403, "Forbidden !! , You Must Be an Admin");
+    }
     next();
   } catch (error) {
     return next(error);
