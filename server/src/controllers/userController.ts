@@ -10,6 +10,7 @@ import { User } from "../models/usermodel";
 import { findWithId } from "../services/findItem";
 import { successResponse } from "./responseConroller";
 var createError = require("http-errors");
+var bcrypt = require("bcryptjs");
 
 const getUsersData = async (
   req: Request,
@@ -59,7 +60,6 @@ const getUsersData = async (
     next(err);
   }
 };
-
 const getUserById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id = req.params.id;
@@ -76,7 +76,6 @@ const getUserById = async (req: Request, res: Response, next: NextFunction) => {
     next(err);
   }
 };
-
 const deleteUserById = async (
   req: Request,
   res: Response,
@@ -177,6 +176,7 @@ const processRegister = async (
    </p>
   `,
     };
+
     try {
       await sendEmailWithNodemailer(emailData);
     } catch (error) {
@@ -241,8 +241,6 @@ const activateUserAccount = async (
 const banUserById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id = req.params.id;
-    //  const payload = req.body;
-
     const isExist = await User.findById(id);
 
     if (!isExist) {
@@ -267,12 +265,97 @@ const banUserById = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const updatePassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { email, oldPassword, newPassword } = req.body;
+    const userId = req.params.id;
+
+    const user = await findWithId(User, userId);
+
+    //check password
+    const isPasswordMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isPasswordMatch) {
+      throw createHttpError(401, " Old Password is not match");
+    }
+    const filter = { userId };
+    const update = { $set: { password: newPassword } };
+    const updateOption = { new: true };
+
+    const updateUser = await User.findByIdAndUpdate(
+      userId,
+      update,
+      updateOption
+    ).select("-password");
+    return successResponse(res, {
+      statusCode: 200,
+      message: " User is password Updated Successfully  ",
+      payload: { updateUser },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const forgetPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { email } = req.body;
+    const userData = await User.findOne({ email: email });
+    if (!userData) {
+      throw createHttpError(404, "User not found!! Please Sign Up!");
+    }
+
+    const token = JsonWebToken.createJWT(
+      { email },
+      config.jwtResetPasswordKey,
+      "10h"
+    );
+    //prepare Email
+    const emailData = {
+      email,
+      subject: "Reset Password  Email",
+      html: ` 
+<h2>Hello ${userData?.name}!</h2>
+<p>Please Click here to <a href=${config.clientURL}/api/users/reset-password/${token} target="_blank">
+ Reset your Password</a>
+ </p>
+`,
+    };
+
+    try {
+      await sendEmailWithNodemailer(emailData);
+    } catch (error) {
+      new createError(500, "Failed to send Reset Password email");
+      return;
+    }
+
+    return successResponse(res, {
+      statusCode: 200,
+      message: ` Please ! Check your ${email} to Reset Password `,
+      payload: { token },
+    });
+
+  
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const UserController = {
   processRegister,
+  forgetPassword,
   activateUserAccount,
   deleteUserById,
   getUserById,
   getUsersData,
+  updatePassword,
   updateUserById,
   banUserById,
 };

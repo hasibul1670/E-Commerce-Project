@@ -18,6 +18,8 @@ export default {
     process.env.JWT_ACTIVATION_KEY || "jdgsjdgshd65416546jhsgbds",
   jwtAccessKey:
     process.env.JWT_ACCESS_KEY || "VERY_ACCESS_KEY",
+  jwtResetPasswordKey:
+    process.env.JWT_RESET_PASSWORD_KEY || "VERY_ACCESS_KEY",
 };
 
 export const serverPort: number = parseInt(

@@ -23,6 +23,24 @@ userRouter.post(
   UserController.processRegister
 );
 userRouter.post("/verify", isLoggedOut, UserController.activateUserAccount);
-userRouter.patch("/ban-user/:id", isLoggedIn,isAdmin, UserController.banUserById);
+userRouter.patch(
+  "/ban-user/:id",
+  isLoggedIn,
+  isAdmin,
+  UserController.banUserById
+);
+
+userRouter.patch(
+  "/update-password/:id",
+  isLoggedIn,
+  UserController.updatePassword
+);
+userRouter.post(
+  "/forget-password",
+  Validation.validateUserForgetPassword,
+  runValidation,
+
+  UserController.forgetPassword
+);
 
 export default userRouter;
