@@ -9,8 +9,14 @@ import { Validation } from "../validators/auth";
 
 const userRouter = express.Router();
 
-userRouter.get("/", isLoggedIn, isAdmin, UserController.getUsersData);
+userRouter.patch(
+  "/reset-password",
+  Validation.validateUserResetPassword,
+  runValidation,
+  UserController.resetPassword
+);
 
+userRouter.get("/", isLoggedIn, isAdmin, UserController.getUsersData);
 userRouter.get("/:id", isLoggedIn, UserController.getUserById);
 userRouter.delete("/:id", isLoggedIn, UserController.deleteUserById);
 userRouter.patch("/:id", isLoggedIn, UserController.updateUserById);
@@ -22,6 +28,7 @@ userRouter.post(
   runValidation,
   UserController.processRegister
 );
+
 userRouter.post("/verify", isLoggedOut, UserController.activateUserAccount);
 userRouter.patch(
   "/ban-user/:id",
@@ -39,7 +46,6 @@ userRouter.post(
   "/forget-password",
   Validation.validateUserForgetPassword,
   runValidation,
-
   UserController.forgetPassword
 );
 

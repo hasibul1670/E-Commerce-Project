@@ -58,9 +58,20 @@ const validateUserForgetPassword = [
     .isEmail()
     .withMessage("Invalid email address"),
 ];
+const validateUserResetPassword = [
+  body("token").trim().notEmpty().withMessage("Token is required"),
+
+  body("password")
+    .trim()
+    .notEmpty()
+    .withMessage("Password is required")
+    .isLength({ min: 6 })
+    .withMessage("Password Should Be At Least 6 Characters"),
+];
 
 export const Validation = {
   validateUserRegistration,
+  validateUserResetPassword,
   validateUserLogin,
   validateUserForgetPassword,
 };

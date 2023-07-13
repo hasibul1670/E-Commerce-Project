@@ -341,8 +341,44 @@ const forgetPassword = async (
       message: ` Please ! Check your ${email} to Reset Password `,
       payload: { token },
     });
+  } catch (err) {
+    next(err);
+  }
+};
 
-  
+
+
+
+const resetPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { token, password } = req.body;
+    const decoded = jwt.verify(token, config.jwtResetPasswordKey) as JwtPayload;
+
+    if (!decoded) {
+      throw createHttpError(400, "Invalid /Expired token");
+    }
+    const filter = { email: decoded.email };
+    const update = { password: password };
+    const options = { new: true };
+
+    const updateUser = await User.findOneAndUpdate(
+      filter,
+      update,
+      options
+    ).select("-passwod");
+
+    if (!updateUser) {
+      throw createHttpError(400,'Password Reset Failed');
+    } 
+    return successResponse(res, {
+      statusCode: 200,
+      message: " User  password Reset Successfully  ",
+      payload: {updateUser},
+    });
   } catch (err) {
     next(err);
   }
@@ -351,6 +387,7 @@ const forgetPassword = async (
 export const UserController = {
   processRegister,
   forgetPassword,
+  resetPassword,
   activateUserAccount,
   deleteUserById,
   getUserById,
